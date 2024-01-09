@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Notes.Application.Notes.Commands.CreateNote;
 using Notes.Application.Notes.Queries.GetNoteDetails;
 using Notes.Application.Notes.Queries.GetNoteList;
 using Notes.WebApi.Models;
@@ -37,7 +38,10 @@ namespace Notes.WebApi.Controllers
         [HttpPost]
         public async Task<ActionResult<Guid>> Create([FromBody] CreateNoteDto createNoteDto)
         {
-            var 
+            var command = _mapper.Map<CreateNoteCommand>(createNoteDto);
+            command.UserId = UserId;
+            var noteId = await Mediator.Send(command);
+            return Ok(noteId);
         }
     }
 }
